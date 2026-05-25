@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PatentSearch — Семантический поиск патентов</title>
+<link rel="stylesheet" href="/static/style.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ── Шапка ── -->
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">⊕</div>
+    PatentSearch
+  </div>
+  <div class="header-status">
+    <span class="status-item">
+      <span class="dot" id="dot-qdrant"></span>
+      <span id="lbl-qdrant">Qdrant</span>
+    </span>
+    <span class="status-item">
+      <span class="dot" id="dot-model"></span>
+      <span id="lbl-model">Модель</span>
+    </span>
+    <span id="lbl-docs" class="doc-count"></span>
+  </div>
+</header>
+
+<!-- ── Основной макет ── -->
+<div class="layout">
+
+  <!-- Сайдбар -->
+  <aside class="sidebar">
+
+    <section>
+      <div class="section-label">Языковая модель</div>
+      <div class="model-list" id="model-list">
+        <label class="model-item active" data-model="e5-base">
+          <span class="radio-dot"></span>
+          <span class="model-info">
+            <span class="model-name">E5-base <em class="badge">RU</em></span>
+            <span class="model-sub">multilingual-e5-base</span>
+          </span>
+        </label>
+        <label class="model-item" data-model="ruscibert">
+          <span class="radio-dot"></span>
+          <span class="model-info">
+            <span class="model-name">ruSciBERT <em class="badge">RU</em></span>
+            <span class="model-sub">ai-forever/ruSciBERT</span>
+          </span>
+        </label>
+        <label class="model-item" data-model="rubert-large">
+          <span class="radio-dot"></span>
+          <span class="model-info">
+            <span class="model-name">ruBERT-large <em class="badge">RU</em></span>
+            <span class="model-sub">ai-forever/ruBert-large</span>
+          </span>
+        </label>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-label">Параметры поиска</div>
+      <div class="field">
+        <label class="field-label">Число результатов (top-K)</label>
+        <select id="top-k" class="input-ctrl">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-label">Фильтр МПК</div>
+      <div class="field">
+        <label class="field-label">Код МПК (опционально)</label>
+        <input id="ipc-filter" class="input-ctrl" type="text"
+               placeholder="напр. G06F, A61K, B03C">
+      </div>
+      <p class="hint">Оставьте пустым для поиска по всему корпусу</p>
+    </section>
+
+    <div class="sidebar-footer">
+      Поиск патентов<br>
+    </div>
+
+  </aside>
+
+  <!-- Главная зона -->
+  <main class="main">
+
+    <!-- Поисковое поле -->
+    <div class="search-box">
+      <div class="search-box-label">// Поисковый запрос</div>
+      <textarea id="query" class="query-input"
+        placeholder="Введите текст реферата патентной заявки или описание изобретения...
+
+Например: Изобретение относится к системам очистки промышленных газов от взвешенных частиц методом электростатического осаждения. Предложен электрофильтр с коронирующими электродами новой геометрии..."></textarea>
+      <div class="query-footer">
+        <span class="char-count" id="char-count">0 символов</span>
+        <span class="hint-key">Ctrl+Enter — поиск</span>
+        <button class="btn-search" id="btn-search" onclick="doSearch()">
+          <svg class="spinner" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2.5" stroke-dasharray="30" stroke-dashoffset="10" stroke-linecap="round"/>
+          </svg>
+          <span class="btn-text">Найти патенты</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Строка статуса поиска -->
+    <div id="search-status" class="search-status" style="display:none"></div>
+
+    <!-- Ошибка -->
+    <div id="error-bar" class="error-bar" style="display:none"></div>
+
+    <!-- Результаты -->
+    <div id="results">
+      <div class="empty-state">
+        <div class="empty-icon">◈</div>
+        <div class="empty-title">Введите запрос для поиска</div>
+        <div class="empty-sub">
+          Система найдёт семантически близкие патенты по смыслу описания<br>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
